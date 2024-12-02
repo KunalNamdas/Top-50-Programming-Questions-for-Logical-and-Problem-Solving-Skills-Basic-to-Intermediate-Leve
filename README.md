@@ -672,6 +672,810 @@ public class StarPattern {
 ---
 
 
+### **21. Implement Binary Search**
+**Algorithm:**
+1. Input a sorted array and the target element.
+2. Use the binary search algorithm: calculate the mid element and compare it to the target.
+3. Recurse or loop to the left or right half of the array based on the comparison.
+
+**Time Complexity:**  
+O(log n) because the search space is halved at each step.
+
+**Code:**
+```java
+public class BinarySearch {
+    public static int binarySearch(int[] arr, int target) {
+        int left = 0, right = arr.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (arr[mid] == target) return mid;
+            if (arr[mid] < target) left = mid + 1;
+            else right = mid - 1;
+        }
+        return -1; // Target not found
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 3, 5, 7, 9}; // Example input
+        int target = 5;
+        int result = binarySearch(arr, target);
+        System.out.println(result != -1 ? "Element found at index: " + result : "Element not found.");
+    }
+}
+```
+
+**Output:**  
+`Element found at index: 2`
+
+---
+
+### **22. Implement a Basic Calculator (Addition, Subtraction, Multiplication, Division)**
+**Algorithm:**
+1. Take two numbers and the operator as input.
+2. Perform the operation based on the input operator.
+
+**Time Complexity:**  
+O(1) because the operations are constant time.
+
+**Code:**
+```java
+import java.util.Scanner;
+
+public class BasicCalculator {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter first number: ");
+        double num1 = sc.nextDouble();
+        System.out.println("Enter operator (+, -, *, /): ");
+        char operator = sc.next().charAt(0);
+        System.out.println("Enter second number: ");
+        double num2 = sc.nextDouble();
+        
+        double result = 0;
+        switch (operator) {
+            case '+': result = num1 + num2; break;
+            case '-': result = num1 - num2; break;
+            case '*': result = num1 * num2; break;
+            case '/': 
+                if (num2 != 0) result = num1 / num2;
+                else System.out.println("Cannot divide by zero.");
+                break;
+            default: System.out.println("Invalid operator.");
+        }
+        
+        System.out.println("Result: " + result);
+    }
+}
+```
+
+**Output:**  
+`Result: 15.0` (if input is `5 + 10`)
+
+---
+
+### **23. Remove Duplicates from a List**
+**Algorithm:**
+1. Input the list.
+2. Use a set to store elements, removing duplicates.
+
+**Time Complexity:**  
+O(n) because we iterate through the list once and the set operations are O(1).
+
+**Code:**
+```java
+import java.util.*;
+
+public class RemoveDuplicates {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(1, 2, 2, 3, 4, 4, 5); // Example input
+        Set<Integer> set = new HashSet<>(list);
+        System.out.println("List without duplicates: " + set);
+    }
+}
+```
+
+**Output:**  
+`List without duplicates: [1, 2, 3, 4, 5]`
+
+---
+
+### **24. Implement Insertion Sort**
+**Algorithm:**
+1. Traverse through the array from the second element to the last.
+2. Insert each element in its correct position in the sorted portion of the array.
+
+**Time Complexity:**  
+O(n^2) because of nested loops.
+
+**Code:**
+```java
+public class InsertionSort {
+    public static void insertionSort(int[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            int key = arr[i];
+            int j = i - 1;
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+            }
+            arr[j + 1] = key;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {5, 2, 9, 1, 5, 6}; // Example input
+        insertionSort(arr);
+        System.out.println("Sorted array: " + Arrays.toString(arr));
+    }
+}
+```
+
+**Output:**  
+`Sorted array: [1, 2, 5, 5, 6, 9]`
+
+---
+
+### **25. Maximum Sum of Contiguous Subarray (Kadane's Algorithm)**
+**Algorithm:**
+1. Initialize two variables: `max_so_far` and `max_ending_here` to 0.
+2. Traverse the array, updating these variables as you go.
+
+**Time Complexity:**  
+O(n) because we only traverse the array once.
+
+**Code:**
+```java
+public class MaximumSumSubarray {
+    public static int maxSubArraySum(int[] arr) {
+        int maxSoFar = arr[0], maxEndingHere = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
+            maxSoFar = Math.max(maxSoFar, maxEndingHere);
+        }
+        return maxSoFar;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {-2, 1, -3, 4, -1, 2, 1, -5, 4}; // Example input
+        System.out.println("Maximum sum of contiguous subarray: " + maxSubArraySum(arr));
+    }
+}
+```
+
+**Output:**  
+`Maximum sum of contiguous subarray: 6`
+
+---
+
+### **26. Check if Two Strings are Anagrams**
+**Algorithm:**
+1. If the lengths of the strings are not equal, return false.
+2. Sort both strings and compare.
+
+**Time Complexity:**  
+O(n log n) because of the sorting operation.
+
+**Code:**
+```java
+import java.util.Arrays;
+
+public class AnagramCheck {
+    public static boolean areAnagrams(String str1, String str2) {
+        if (str1.length() != str2.length()) return false;
+        char[] arr1 = str1.toCharArray();
+        char[] arr2 = str2.toCharArray();
+        Arrays.sort(arr1);
+        Arrays.sort(arr2);
+        return Arrays.equals(arr1, arr2);
+    }
+
+    public static void main(String[] args) {
+        String str1 = "listen", str2 = "silent"; // Example input
+        System.out.println(areAnagrams(str1, str2) ? "Anagrams" : "Not Anagrams");
+    }
+}
+```
+
+**Output:**  
+`Anagrams`
+
+---
+
+### **27. Frequency of Each Character in a String**
+**Algorithm:**
+1. Traverse the string and store the frequency of each character in a map.
+
+**Time Complexity:**  
+O(n) because we iterate through the string once.
+
+**Code:**
+```java
+import java.util.*;
+
+public class CharacterFrequency {
+    public static void main(String[] args) {
+        String str = "programming"; // Example input
+        Map<Character, Integer> frequencyMap = new HashMap<>();
+        for (char ch : str.toCharArray()) {
+            frequencyMap.put(ch, frequencyMap.getOrDefault(ch, 0) + 1);
+        }
+        System.out.println("Character frequencies: " + frequencyMap);
+    }
+}
+```
+
+**Output:**  
+`Character frequencies: {a=2, g=2, i=1, m=2, n=1, o=1, p=1, r=2}`
+
+---
+
+### **28. Reverse a Linked List (Iteratively or Recursively)**
+**Algorithm:**
+1. Traverse the linked list, changing the pointers to point to the previous node.
+2. For recursion, reverse the rest of the list first, and adjust the pointers.
+
+**Time Complexity:**  
+O(n) because we visit each node once.
+
+**Code (Iterative):**
+```java
+class Node {
+    int data;
+    Node next;
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+public class ReverseLinkedList {
+    public static Node reverse(Node head) {
+        Node prev = null, curr = head, next = null;
+        while (curr != null) {
+            next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+        return prev;
+    }
+
+    public static void main(String[] args) {
+        Node head = new Node(1);
+        head.next = new Node(2);
+        head.next.next = new Node(3);
+        head.next.next.next = new Node(4);
+
+        head = reverse(head);
+        Node curr = head;
+        while (curr != null) {
+            System.out.print(curr.data + " ");
+            curr = curr.next;
+        }
+    }
+}
+```
+
+**Output:**  
+`4 3 2 1`
+
+---
+
+### **29. Implement a Stack Using Arrays or Linked Lists**
+**Algorithm:**
+1. Push elements onto the top of the stack and pop them off.
+
+**Time Complexity:**  
+
+
+O(1) for both push and pop operations.
+
+**Code (Using Array):**
+```java
+class Stack {
+    private int[] arr;
+    private int top;
+    Stack(int size) {
+        arr = new int[size];
+        top = -1;
+    }
+    void push(int value) {
+        if (top == arr.length - 1) System.out.println("Stack is full");
+        else arr[++top] = value;
+    }
+    int pop() {
+        if (top == -1) return -1;
+        else return arr[top--];
+    }
+    public static void main(String[] args) {
+        Stack stack = new Stack(5);
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        System.out.println("Popped: " + stack.pop());
+    }
+}
+```
+
+**Output:**  
+`Popped: 30`
+
+---
+
+### **30. Implement a Queue Using Stacks**
+**Algorithm:**
+1. Use two stacks: one for enqueue operation and one for dequeue operation.
+
+**Time Complexity:**  
+O(1) for both enqueue and dequeue operations (amortized).
+
+**Code:**
+```java
+import java.util.*;
+
+class QueueUsingStacks {
+    Stack<Integer> stack1 = new Stack<>();
+    Stack<Integer> stack2 = new Stack<>();
+
+    void enqueue(int item) {
+        stack1.push(item);
+    }
+
+    int dequeue() {
+        if (stack2.isEmpty()) {
+            if (stack1.isEmpty()) {
+                System.out.println("Queue is empty");
+                return -1;
+            }
+            while (!stack1.isEmpty()) {
+                stack2.push(stack1.pop());
+            }
+        }
+        return stack2.pop();
+    }
+
+    public static void main(String[] args) {
+        QueueUsingStacks queue = new QueueUsingStacks();
+        queue.enqueue(10);
+        queue.enqueue(20);
+        queue.enqueue(30);
+        System.out.println("Dequeued: " + queue.dequeue());
+    }
+}
+```
+
+**Output:**  
+`Dequeued: 10`
+
+---
+
+
+### **31. Find the Missing Number in an Array of Size n Containing Numbers from 1 to n**
+**Algorithm:**
+1. Calculate the sum of the first `n` natural numbers using the formula `n * (n + 1) / 2`.
+2. Subtract the sum of elements in the array from the calculated sum to find the missing number.
+
+**Time Complexity:**  
+O(n) because we traverse the array once to calculate the sum.
+
+**Code:**
+```java
+public class MissingNumber {
+    public static int findMissingNumber(int[] arr, int n) {
+        int expectedSum = n * (n + 1) / 2;
+        int actualSum = 0;
+        for (int num : arr) {
+            actualSum += num;
+        }
+        return expectedSum - actualSum;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 5}; // Example input (missing number is 4)
+        System.out.println("Missing number: " + findMissingNumber(arr, 5));
+    }
+}
+```
+
+**Output:**  
+`Missing number: 4`
+
+---
+
+### **32. Check if a Matrix is Symmetric**
+**Algorithm:**
+1. For a matrix to be symmetric, its transpose should be equal to itself.
+2. Transpose the matrix and compare each element with the original matrix.
+
+**Time Complexity:**  
+O(n^2) because we need to iterate through all elements of the matrix.
+
+**Code:**
+```java
+public class SymmetricMatrix {
+    public static boolean isSymmetric(int[][] matrix) {
+        int n = matrix.length;
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                if (matrix[i][j] != matrix[j][i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        int[][] matrix = {
+            {1, 2, 3},
+            {2, 4, 5},
+            {3, 5, 6}
+        }; // Example symmetric matrix
+        System.out.println(isSymmetric(matrix) ? "Matrix is symmetric" : "Matrix is not symmetric");
+    }
+}
+```
+
+**Output:**  
+`Matrix is symmetric`
+
+---
+
+### **33. Calculate the Power of a Number Using Recursion**
+**Algorithm:**
+1. Use recursion to calculate the power by multiplying the base number by itself.
+2. Base case: If the exponent is 0, return 1.
+
+**Time Complexity:**  
+O(n) because we recursively multiply the base number `n` times.
+
+**Code:**
+```java
+public class PowerOfNumber {
+    public static int power(int base, int exponent) {
+        if (exponent == 0) return 1;
+        return base * power(base, exponent - 1);
+    }
+
+    public static void main(String[] args) {
+        int base = 2, exponent = 3;
+        System.out.println(base + " raised to the power of " + exponent + " is " + power(base, exponent));
+    }
+}
+```
+
+**Output:**  
+`2 raised to the power of 3 is 8`
+
+---
+
+### **34. Find the First Non-Repeating Character in a String**
+**Algorithm:**
+1. Traverse the string and store character frequencies in a map.
+2. Traverse the map to find the first character with frequency 1.
+
+**Time Complexity:**  
+O(n) because we iterate through the string and map.
+
+**Code:**
+```java
+import java.util.*;
+
+public class FirstNonRepeatingCharacter {
+    public static char firstNonRepeating(String str) {
+        Map<Character, Integer> frequencyMap = new LinkedHashMap<>();
+        for (char ch : str.toCharArray()) {
+            frequencyMap.put(ch, frequencyMap.getOrDefault(ch, 0) + 1);
+        }
+        for (char ch : frequencyMap.keySet()) {
+            if (frequencyMap.get(ch) == 1) return ch;
+        }
+        return '\0'; // No non-repeating character found
+    }
+
+    public static void main(String[] args) {
+        String str = "swiss"; // Example input
+        System.out.println("First non-repeating character: " + firstNonRepeating(str));
+    }
+}
+```
+
+**Output:**  
+`First non-repeating character: w`
+
+---
+
+### **35. Rotate an Array by k Positions**
+**Algorithm:**
+1. Reverse the entire array.
+2. Reverse the first `k` elements and the remaining `n-k` elements.
+
+**Time Complexity:**  
+O(n) because we perform three reverse operations, each of which takes linear time.
+
+**Code:**
+```java
+public class ArrayRotation {
+    public static void reverse(int[] arr, int start, int end) {
+        while (start < end) {
+            int temp = arr[start];
+            arr[start] = arr[end];
+            arr[end] = temp;
+            start++;
+            end--;
+        }
+    }
+
+    public static void rotateArray(int[] arr, int k) {
+        k = k % arr.length; // In case k is larger than array size
+        reverse(arr, 0, arr.length - 1);
+        reverse(arr, 0, k - 1);
+        reverse(arr, k, arr.length - 1);
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5}; // Example input
+        rotateArray(arr, 2); // Rotate by 2 positions
+        System.out.println("Rotated array: " + Arrays.toString(arr));
+    }
+}
+```
+
+**Output:**  
+`Rotated array: [4, 5, 1, 2, 3]`
+
+---
+
+### **36. Find the Longest Common Prefix in an Array of Strings**
+**Algorithm:**
+1. Compare characters of each string with the first string.
+2. If any string does not match, reduce the prefix.
+
+**Time Complexity:**  
+O(n * m) where `n` is the number of strings and `m` is the length of the shortest string.
+
+**Code:**
+```java
+public class LongestCommonPrefix {
+    public static String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) return "";
+        String prefix = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(prefix) != 0) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+                if (prefix.isEmpty()) return "";
+            }
+        }
+        return prefix;
+    }
+
+    public static void main(String[] args) {
+        String[] strs = {"flower", "flow", "flight"}; // Example input
+        System.out.println("Longest common prefix: " + longestCommonPrefix(strs));
+    }
+}
+```
+
+**Output:**  
+`Longest common prefix: fl`
+
+---
+
+### **37. Implement a Basic LRU Cache**
+**Algorithm:**
+1. Use a LinkedHashMap to maintain the order of elements.
+2. Remove the least recently used element when the cache exceeds the limit.
+
+**Time Complexity:**  
+O(1) for both `get` and `put` operations.
+
+**Code:**
+```java
+import java.util.*;
+
+public class LRUCache {
+    private final int capacity;
+    private final LinkedHashMap<Integer, Integer> map;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        this.map = new LinkedHashMap<>(capacity, 0.75f, true);
+    }
+
+    public int get(int key) {
+        return map.getOrDefault(key, -1);
+    }
+
+    public void put(int key, int value) {
+        if (map.size() >= capacity) {
+            Iterator<Map.Entry<Integer, Integer>> iterator = map.entrySet().iterator();
+            iterator.next();
+            iterator.remove();
+        }
+        map.put(key, value);
+    }
+
+    public static void main(String[] args) {
+        LRUCache cache = new LRUCache(2); // Capacity 2
+        cache.put(1, 1);
+        cache.put(2, 2);
+        System.out.println(cache.get(1)); // Returns 1
+        cache.put(3, 3); // Removes key 2
+        System.out.println(cache.get(2)); // Returns -1 (not found)
+    }
+}
+```
+
+**Output:**  
+`1 -1`
+
+---
+
+### **38. Flatten a Nested List into a Single-Level List**
+**Algorithm:**
+1. Use recursion to traverse and flatten the nested list.
+
+**Time Complexity:**  
+O(n), where `n` is the total number of elements in the nested list.
+
+**Code:**
+```java
+import java.util.*;
+
+public class FlattenList {
+    public static List<Integer> flattenList(List<Object> nestedList) {
+        List<Integer> result = new ArrayList<>();
+        for (Object item : nestedList) {
+            if (item instanceof Integer) {
+                result.add((Integer) item);
+            } else if (item instanceof List) {
+                result.addAll(flattenList((List<Object>) item));
+            }
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        List<Object> nestedList = Arrays.asList(1, Arrays.asList(2, 3), 4, Arrays.asList(5, Arrays.asList(6, 7)));
+        System.out.println("Flattened list: " + flattenList(nested
+
+List));
+    }
+}
+```
+
+**Output:**  
+`Flattened list: [1, 2, 3, 4, 5, 6, 7]`
+
+---
+
+
+
+### **39. Find the Intersection of Two Arrays**
+**Algorithm:**
+1. Use a hash set to store the elements of one array.
+2. Traverse the second array and check if an element is present in the hash set. If yes, it’s part of the intersection.
+
+**Time Complexity:**  
+O(n + m) where `n` and `m` are the lengths of the two arrays, due to the use of a hash set.
+
+**Code:**
+```java
+import java.util.*;
+
+public class IntersectionOfArrays {
+    public static int[] findIntersection(int[] arr1, int[] arr2) {
+        Set<Integer> set = new HashSet<>();
+        List<Integer> result = new ArrayList<>();
+        
+        for (int num : arr1) {
+            set.add(num);
+        }
+        
+        for (int num : arr2) {
+            if (set.contains(num)) {
+                result.add(num);
+                set.remove(num); // Remove to avoid duplicates
+            }
+        }
+        
+        return result.stream().mapToInt(i -> i).toArray(); // Convert List to array
+    }
+
+    public static void main(String[] args) {
+        int[] arr1 = {1, 2, 2, 1}; // Example input
+        int[] arr2 = {2, 2}; 
+        int[] intersection = findIntersection(arr1, arr2);
+        System.out.println("Intersection: " + Arrays.toString(intersection));
+    }
+}
+```
+
+**Output:**  
+`Intersection: [2, 2]`
+
+---
+
+### **40. Implement a Binary Tree and Perform In-order, Pre-order, and Post-order Traversal**
+**Algorithm:**
+1. For In-order: Traverse left subtree, visit node, traverse right subtree.
+2. For Pre-order: Visit node, traverse left subtree, traverse right subtree.
+3. For Post-order: Traverse left subtree, traverse right subtree, visit node.
+
+**Time Complexity:**  
+O(n) for all three traversals, where `n` is the number of nodes in the tree, because each node is visited exactly once.
+
+**Code:**
+```java
+class BinaryTree {
+    static class Node {
+        int data;
+        Node left, right;
+
+        Node(int data) {
+            this.data = data;
+            left = right = null;
+        }
+    }
+
+    Node root;
+
+    // In-order traversal
+    void inOrder(Node node) {
+        if (node == null) return;
+        inOrder(node.left);
+        System.out.print(node.data + " ");
+        inOrder(node.right);
+    }
+
+    // Pre-order traversal
+    void preOrder(Node node) {
+        if (node == null) return;
+        System.out.print(node.data + " ");
+        preOrder(node.left);
+        preOrder(node.right);
+    }
+
+    // Post-order traversal
+    void postOrder(Node node) {
+        if (node == null) return;
+        postOrder(node.left);
+        postOrder(node.right);
+        System.out.print(node.data + " ");
+    }
+
+    public static void main(String[] args) {
+        BinaryTree tree = new BinaryTree();
+        tree.root = new Node(1);
+        tree.root.left = new Node(2);
+        tree.root.right = new Node(3);
+        tree.root.left.left = new Node(4);
+        tree.root.left.right = new Node(5);
+
+        System.out.print("In-order: ");
+        tree.inOrder(tree.root);
+        System.out.println();
+        
+        System.out.print("Pre-order: ");
+        tree.preOrder(tree.root);
+        System.out.println();
+        
+        System.out.print("Post-order: ");
+        tree.postOrder(tree.root);
+        System.out.println();
+    }
+}
+```
+
+**Output:**
+```
+In-order: 4 2 5 1 3 
+Pre-order: 1 2 4 5 3 
+Post-order: 4 5 2 3 1
+```
+
+---
+
 
 
 These problems will strengthen your foundational and intermediate-level programming skills. You can use any programming language of your choice, such as Python, Java, C++, or JavaScript, to solve these. Let me know if you’d like detailed solutions or hints for any of these!
