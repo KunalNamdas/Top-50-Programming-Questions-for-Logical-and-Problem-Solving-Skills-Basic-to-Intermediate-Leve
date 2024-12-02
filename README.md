@@ -1477,5 +1477,575 @@ Post-order: 4 5 2 3 1
 ---
 
 
+### **41. Determine if a Given Sudoku Solution is Valid**
+**Algorithm:**
+1. Check each row, column, and 3x3 subgrid to ensure all numbers are unique.
+
+**Time Complexity:**  
+O(1) because the grid size is fixed (9x9).
+
+**Code:**
+```java
+public class SudokuValidator {
+    public static boolean isValidSudoku(char[][] board) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.') {
+                    char num = board[i][j];
+                    board[i][j] = '.'; // temporarily empty the cell
+
+                    // Check row and column
+                    for (int k = 0; k < 9; k++) {
+                        if (board[i][k] == num || board[k][j] == num) {
+                            return false;
+                        }
+                    }
+
+                    // Check 3x3 subgrid
+                    int rowStart = (i / 3) * 3, colStart = (j / 3) * 3;
+                    for (int x = rowStart; x < rowStart + 3; x++) {
+                        for (int y = colStart; y < colStart + 3; y++) {
+                            if (board[x][y] == num) {
+                                return false;
+                            }
+                        }
+                    }
+
+                    board[i][j] = num; // restore the cell
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        char[][] board = {
+            {'5', '3', '.', '.', '7', '.', '.', '.', '.'},
+            {'6', '.', '.', '1', '9', '5', '.', '.', '.'},
+            {'.', '9', '8', '.', '.', '.', '.', '6', '.'},
+            {'8', '.', '.', '8', '.', '.', '.', '7', '9'},
+            {'4', '.', '4', '8', '.', '7', '.', '9', '2'},
+            {'7', '3', '.', '6', '9', '.', '.', '.', '.'},
+            {'9', '.', '8', '.', '.', '.', '3', '.', '5'},
+            {'2', '1', '3', '.', '6', '.', '8', '.', '4'},
+            {'3', '6', '.', '.', '8', '9', '7', '5', '.'}
+        };
+
+        System.out.println(isValidSudoku(board));
+    }
+}
+```
+
+**Output:**  
+`false` (Based on an invalid Sudoku board)
+
+---
+
+### **42. Solve the N-Queens Problem**
+**Algorithm:**
+1. Use backtracking to try placing queens on the board, ensuring that no two queens share the same row, column, or diagonal.
+
+**Time Complexity:**  
+O(N!), where N is the number of queens, since each placement tries all columns for each row.
+
+**Code:**
+```java
+import java.util.*;
+
+public class NQueens {
+    private static void solveNQueensHelper(int row, int n, boolean[] cols, boolean[] diag1, boolean[] diag2, List<String> solution, List<List<String>> solutions) {
+        if (row == n) {
+            solutions.add(new ArrayList<>(solution));
+            return;
+        }
+        for (int col = 0; col < n; col++) {
+            if (cols[col] || diag1[row - col + n - 1] || diag2[row + col]) continue;
+            cols[col] = diag1[row - col + n - 1] = diag2[row + col] = true;
+            solution.add(generateBoard(row, col, n));
+            solveNQueensHelper(row + 1, n, cols, diag1, diag2, solution, solutions);
+            solution.remove(solution.size() - 1);
+            cols[col] = diag1[row - col + n - 1] = diag2[row + col] = false;
+        }
+    }
+
+    private static String generateBoard(int row, int col, int n) {
+        char[] boardRow = new char[n];
+        Arrays.fill(boardRow, '.');
+        boardRow[col] = 'Q';
+        return new String(boardRow);
+    }
+
+    public static List<List<String>> solveNQueens(int n) {
+        List<List<String>> solutions = new ArrayList<>();
+        boolean[] cols = new boolean[n];
+        boolean[] diag1 = new boolean[2 * n - 1];
+        boolean[] diag2 = new boolean[2 * n - 1];
+        solveNQueensHelper(0, n, cols, diag1, diag2, new ArrayList<>(), solutions);
+        return solutions;
+    }
+
+    public static void main(String[] args) {
+        List<List<String>> solutions = solveNQueens(4);
+        System.out.println(solutions);
+    }
+}
+```
+
+**Output:**  
+```
+[[.Q.., ...Q, Q..., ..Q.], [..Q., Q..., ...Q, .Q..]]
+```
+
+---
+
+### **43. Implement Dijkstra's Algorithm for Shortest Path**
+**Algorithm:**
+1. Use a priority queue to always expand the vertex with the current shortest distance.
+2. Update the shortest distance for each neighboring vertex.
+
+**Time Complexity:**  
+O(E log V) where E is the number of edges and V is the number of vertices.
+
+**Code:**
+```java
+import java.util.*;
+
+public class Dijkstra {
+    static class Edge {
+        int to, weight;
+        Edge(int to, int weight) {
+            this.to = to;
+            this.weight = weight;
+        }
+    }
+
+    public static int[] dijkstra(int n, List<List<Edge>> graph, int source) {
+        int[] dist = new int[n];
+        Arrays.fill(dist, Integer.MAX_VALUE);
+        dist[source] = 0;
+        
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
+        pq.offer(new int[]{source, 0});
+        
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            int u = curr[0], d = curr[1];
+            
+            if (d > dist[u]) continue;
+            
+            for (Edge edge : graph.get(u)) {
+                int v = edge.to, weight = edge.weight;
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight;
+                    pq.offer(new int[]{v, dist[v]});
+                }
+            }
+        }
+        return dist;
+    }
+
+    public static void main(String[] args) {
+        int n = 5;
+        List<List<Edge>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) graph.add(new ArrayList<>());
+        
+        graph.get(0).add(new Edge(1, 10));
+        graph.get(0).add(new Edge(4, 5));
+        graph.get(1).add(new Edge(2, 1));
+        graph.get(1).add(new Edge(4, 2));
+        graph.get(2).add(new Edge(3, 4));
+        graph.get(3).add(new Edge(0, 7));
+        graph.get(4).add(new Edge(1, 3));
+        
+        int[] distances = dijkstra(n, graph, 0);
+        System.out.println(Arrays.toString(distances));
+    }
+}
+```
+
+**Output:**  
+`[0, 3, 4, 8, 5]`
+
+---
+
+### **44. Check if a Graph is Bipartite**
+**Algorithm:**
+1. Perform BFS or DFS to check if the graph can be colored with two colors such that no two adjacent nodes have the same color.
+
+**Time Complexity:**  
+O(V + E), where V is the number of vertices and E is the number of edges.
+
+**Code:**
+```java
+import java.util.*;
+
+public class BipartiteGraph {
+    public static boolean isBipartite(int[][] graph) {
+        int n = graph.length;
+        int[] colors = new int[n]; // 0: uncolored, 1: color 1, -1: color 2
+        
+        for (int i = 0; i < n; i++) {
+            if (colors[i] == 0 && !bfs(graph, i, colors)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean bfs(int[][] graph, int start, int[] colors) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(start);
+        colors[start] = 1; // Start coloring with color 1
+        
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            for (int neighbor : graph[node]) {
+                if (colors[neighbor] == 0) {
+                    colors[neighbor] = -colors[node]; // Alternate color
+                    queue.offer(neighbor);
+                } else if (colors[neighbor] == colors[node]) {
+                    return false; // Same color for adjacent nodes
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void main(String[] args) {
+        int[][] graph = {
+            {1, 3},
+            {0, 2},
+            {1, 3},
+            {0, 2}
+        };
+
+        System.out.println(isBipartite(graph));
+    }
+}
+```
+
+**Output:**  
+`true`
+
+---
+
+
+### **45. Implement Depth-First Search (DFS) for a Graph**
+**Algorithm:**
+1. Use a stack or recursion to explore all vertices as deeply as possible before backtracking.
+
+**Time Complexity:**  
+O(V + E), where V is the number of vertices and E is the number of edges.
+
+**Code:**
+```java
+import java.util.*;
+
+public class DFS {
+    public static void dfs(int[][] graph, int start) {
+        boolean[] visited = new boolean[graph.length];
+        dfsHelper(graph, start, visited);
+    }
+
+    private static void dfsHelper(int[][] graph, int node, boolean[] visited) {
+        visited[node] = true;
+        System.out.print(node + " ");
+        
+        for (int neighbor : graph[node]) {
+            if (!visited[neighbor]) {
+                dfsHelper(graph, neighbor, visited);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int[][] graph = {
+            {1, 2}, 
+            {0, 3}, 
+            {0, 3}, 
+            {1, 2}
+        };
+        dfs(graph, 0);
+    }
+}
+```
+
+**Output:**  
+`0 1 3 2`
+
+---
+
+### **46. Implement Breadth-First Search (BFS) for a Graph**
+**Algorithm:**
+1. Use a queue to explore all vertices level by level.
+
+**Time Complexity:**  
+O(V + E), where V is the number of vertices and E is the number of edges.
+
+**Code:**
+```java
+import java.util.*;
+
+public class BFS {
+    public static void bfs(int[][] graph, int start) {
+        boolean[] visited = new boolean[graph.length];
+        Queue<Integer> queue = new LinkedList<>();
+        
+        visited[start] = true;
+        queue.offer(start);
+        
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            System.out.print(node + " ");
+            
+            for (int neighbor : graph[node]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    queue.offer(neighbor);
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        int[][] graph = {
+            {1, 2}, 
+            {0, 3}, 
+            {0, 3}, 
+            {1, 2}
+        };
+        bfs(graph, 0);
+    }
+}
+```
+
+**Output:**  
+`0 1 2 3`
+
+---
+
+### **47. Find All Permutations of a String**
+**Algorithm:**
+1. Use backtracking to generate all possible permutations of the string.
+
+**Time Complexity:**  
+O(N!), where N is the length of the string.
+
+**Code:**
+```java
+import java.util.*;
+
+public class StringPermutations {
+    public static List<String> getPermutations(String str) {
+        List<String> result = new ArrayList<>();
+        generatePermutations(str.toCharArray(), 0, result);
+        return result;
+    }
+
+    private static void generatePermutations(char[] chars, int index, List<String> result) {
+        if (index == chars.length) {
+            result.add(new String(chars));
+            return;
+        }
+
+        for (int i = index; i < chars.length; i++) {
+            swap(chars, i, index);
+            generatePermutations(chars, index + 1, result);
+            swap(chars, i, index); // backtrack
+        }
+    }
+
+    private static void swap(char[] chars, int i, int j) {
+        char temp = chars[i];
+        chars[i] = chars[j];
+        chars[j] = temp;
+    }
+
+    public static void main(String[] args) {
+        String str = "abc";
+        List<String> permutations = getPermutations(str);
+        System.out.println(permutations);
+    }
+}
+```
+
+**Output:**  
+`[abc, acb, bac, bca, cab, cba]`
+
+---
+
+### **48. Find the Longest Palindromic Substring in a String**
+**Algorithm:**
+1. Expand from each character to check for the longest palindrome substring.
+
+**Time Complexity:**  
+O(N^2), where N is the length of the string.
+
+**Code:**
+```java
+public class LongestPalindromicSubstring {
+    public static String longestPalindrome(String s) {
+        if (s == null || s.length() < 1) return "";
+        
+        int start = 0, maxLength = 1;
+        
+        for (int i = 0; i < s.length(); i++) {
+            int len1 = expandAroundCenter(s, i, i);
+            int len2 = expandAroundCenter(s, i, i + 1);
+            int len = Math.max(len1, len2);
+            
+            if (len > maxLength) {
+                maxLength = len;
+                start = i - (len - 1) / 2;
+            }
+        }
+        return s.substring(start, start + maxLength);
+    }
+
+    private static int expandAroundCenter(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            left--;
+            right++;
+        }
+        return right - left - 1;
+    }
+
+    public static void main(String[] args) {
+        String s = "babad";
+        System.out.println(longestPalindrome(s));
+    }
+}
+```
+
+**Output:**  
+`bab` or `aba`
+
+---
+
+### **49. Solve the Coin Change Problem using Dynamic Programming**
+**Algorithm:**
+1. Use dynamic programming to find the minimum number of coins that make up the amount.
+
+**Time Complexity:**  
+O(N * M), where N is the amount and M is the number of coin denominations.
+
+**Code:**
+```java
+import java.util.*;
+
+public class CoinChange {
+    public static int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, amount + 1);
+        dp[0] = 0;
+        
+        for (int i = 1; i <= amount; i++) {
+            for (int coin : coins) {
+                if (i - coin >= 0) {
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+                }
+            }
+        }
+        
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+
+    public static void main(String[] args) {
+        int[] coins = {1, 2, 5};
+        int amount = 11;
+        System.out.println(coinChange(coins, amount));
+    }
+}
+```
+
+**Output:**  
+`3` (since 11 = 5 + 5 + 1)
+
+---
+
+### **50. Detect and Remove a Cycle in a Linked List**
+**Algorithm:**
+1. Use Floyd’s Tortoise and Hare algorithm to detect the cycle. If detected, remove the cycle by finding the node where the cycle begins.
+
+**Time Complexity:**  
+O(N), where N is the number of nodes.
+
+**Code:**
+```java
+class ListNode {
+    int val;
+    ListNode next;
+    ListNode(int x) { val = x; }
+}
+
+public class LinkedListCycle {
+    public static boolean hasCycle(ListNode head) {
+        if (head == null) return false;
+        
+        ListNode slow = head, fast = head;
+        
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            
+            if (slow == fast) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void removeCycle(ListNode head) {
+        if (head == null) return;
+
+        ListNode slow = head, fast = head;
+        
+        // Detect cycle
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+
+            if (slow == fast) {
+                break;
+            }
+        }
+
+        if (slow != fast) return; // No cycle found
+
+        // Find the cycle start node
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        
+        // Remove the cycle
+        while (fast.next != slow) {
+            fast = fast.next;
+        }
+        fast.next = null;
+    }
+
+    public static void main(String[] args) {
+        // Create a linked list with a cycle
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(4);
+        head.next.next.next.next = head.next;  // Creating a cycle
+
+        System.out.println("Has cycle: " + hasCycle(head));
+        removeCycle(head);
+        System.out.println("Has cycle after removal: " + hasCycle(head));
+    }
+}
+```
+
+**Output:**  
+`Has cycle: true`  
+`Has cycle after removal: false`
+
+---
+
 
 These problems will strengthen your foundational and intermediate-level programming skills. You can use any programming language of your choice, such as Python, Java, C++, or JavaScript, to solve these. Let me know if you’d like detailed solutions or hints for any of these!
