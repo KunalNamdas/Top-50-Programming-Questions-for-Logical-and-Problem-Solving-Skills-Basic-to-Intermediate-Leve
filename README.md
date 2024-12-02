@@ -1,4 +1,4 @@
-Here’s a list of **50 programming questions** ranging from basic to intermediate level. These questions focus on developing programming logic, data structures, algorithms, and problem-solving skills, suitable for most programming tests:
+**50 programming questions** ranging from basic to intermediate level. These questions focus on developing programming logic, data structures, algorithms, and problem-solving skills, suitable for most programming tests:
 
 ---
 
@@ -2048,4 +2048,4 @@ public class LinkedListCycle {
 ---
 
 
-These problems will strengthen your foundational and intermediate-level programming skills. You can use any programming language of your choice, such as Python, Java, C++, or JavaScript, to solve these. Let me know if you’d like detailed solutions or hints for any of these!
+These problems will strengthen your foundational and intermediate-level programming skills. You can use any programming language of your choice, such as Python, Java, C++, or JavaScript, to solve these.
